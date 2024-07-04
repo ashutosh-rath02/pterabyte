@@ -4,11 +4,29 @@ document.addEventListener("DOMContentLoaded", function () {
   const folderSelect = document.getElementById("folderSelect");
   const newFolderName = document.getElementById("newFolderName");
   const addNewFolder = document.getElementById("addNewFolder");
+  const newFolderForm = document.getElementById("newFolderForm");
+  const confirmNewFolder = document.getElementById("confirmNewFolder");
 
-  // Load folders and items
+  function openPopup() {
+    chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+      const currentTab = tabs[0];
+      document.getElementById("title").value = currentTab.title;
+      document.getElementById("description").value = currentTab.url;
+    });
+  }
+
+  chrome.runtime.onMessage.addListener(function (
+    request,
+    sender,
+    sendResponse
+  ) {
+    if (request.action === "openPopup") {
+      openPopup();
+    }
+  });
+
   loadFoldersAndItems();
 
-  // Add new item
   addForm.addEventListener("submit", function (e) {
     e.preventDefault();
     const title = document.getElementById("title").value;
@@ -28,8 +46,12 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 
-  // Add new folder
   addNewFolder.addEventListener("click", function () {
+    newFolderForm.style.display =
+      newFolderForm.style.display === "none" ? "flex" : "none";
+  });
+
+  confirmNewFolder.addEventListener("click", function () {
     const folderName = newFolderName.value.trim();
     if (folderName) {
       chrome.storage.sync.get(["folders"], function (result) {
@@ -39,6 +61,7 @@ document.addEventListener("DOMContentLoaded", function () {
           chrome.storage.sync.set({ folders: folders }, function () {
             loadFoldersAndItems();
             newFolderName.value = "";
+            newFolderForm.style.display = "none";
             addFolderOption(folderName);
           });
         } else {
@@ -48,13 +71,12 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 
-  // Load and display folders and items
   function loadFoldersAndItems() {
     chrome.storage.sync.get(["folders"], function (result) {
       const folders = result.folders || {
-        links: [],
-        articles: [],
-        notes: [],
+        Links: [],
+        Articles: [],
+        Notes: [],
       };
       folderContainer.innerHTML = "";
       Object.keys(folders).forEach((folderName) => {
@@ -73,12 +95,48 @@ document.addEventListener("DOMContentLoaded", function () {
     folderElement.innerHTML = `
       <div class="folder-header">
         <span>${folderName}</span>
-        <button class="delete-folder" data-folder="${folderName}">Delete</button>
+        <div>
+          <i class="fas fa-trash delete-folder" data-folder="${folderName}"></i>
+          <i class="fas fa-chevron-down"></i>
+        </div>
       </div>
-      <div class="folder-content"></div>
+      <div class="folder-content">
+        <div class="loader" style="display: none;"></div>
+      </div>
     `;
 
     const contentElement = folderElement.querySelector(".folder-content");
+    const loader = contentElement.querySelector(".loader");
+
+    folderElement
+      .querySelector(".folder-header")
+      .addEventListener("click", function () {
+        const content = this.nextElementSibling;
+        const chevron = this.querySelector(".fa-chevron-down");
+        if (content.style.display === "none" || content.style.display === "") {
+          content.style.display = "block";
+          chevron.style.transform = "rotate(180deg)";
+          if (contentElement.children.length === 1) {
+            loader.style.display = "inline-block";
+            setTimeout(() => {
+              renderItems(contentElement, items, folderName);
+              loader.style.display = "none";
+            }, 300);
+          }
+        } else {
+          content.style.display = "none";
+          chevron.style.transform = "rotate(0deg)";
+        }
+      });
+
+    folderElement
+      .querySelector(".delete-folder")
+      .addEventListener("click", deleteFolder);
+
+    return folderElement;
+  }
+
+  function renderItems(contentElement, items, folderName) {
     items.forEach((item, index) => {
       const itemElement = document.createElement("div");
       itemElement.className = "item";
@@ -87,32 +145,18 @@ document.addEventListener("DOMContentLoaded", function () {
         <p>${item.description}</p>
         <div class="item-buttons">
           <button class="copy" data-folder="${folderName}" data-index="${index}">Copy</button>
-          <button class="delete" data-folder="${folderName}" data-index="${index}">Delete</button>
+          <i class="fas fa-trash delete" data-folder="${folderName}" data-index="${index}"></i>
         </div>
       `;
       contentElement.appendChild(itemElement);
     });
 
-    folderElement
-      .querySelector(".folder-header")
-      .addEventListener("click", toggleFolder);
-    folderElement
-      .querySelector(".delete-folder")
-      .addEventListener("click", deleteFolder);
-    folderElement.querySelectorAll(".copy").forEach((button) => {
+    contentElement.querySelectorAll(".copy").forEach((button) => {
       button.addEventListener("click", copyItem);
     });
-    folderElement.querySelectorAll(".delete").forEach((button) => {
-      button.addEventListener("click", deleteItem);
+    contentElement.querySelectorAll(".delete").forEach((icon) => {
+      icon.addEventListener("click", deleteItem);
     });
-
-    return folderElement;
-  }
-
-  function toggleFolder(e) {
-    if (e.target.classList.contains("delete-folder")) return;
-    const content = e.currentTarget.nextElementSibling;
-    content.style.display = content.style.display === "none" ? "block" : "none";
   }
 
   function deleteFolder(e) {
@@ -173,12 +217,11 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
-  // Initialize folder options
   chrome.storage.sync.get(["folders"], function (result) {
     const folders = result.folders || {
-      links: [],
-      articles: [],
-      notes: [],
+      Links: [],
+      Articles: [],
+      Notes: [],
     };
     Object.keys(folders).forEach((folderName) => {
       addFolderOption(folderName);

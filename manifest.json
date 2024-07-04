@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "Pterabyte",
   "version": "1.1",
-  "description": "Store and manage important links and text",
+  "description": "Store and manage important Links and text",
   "permissions": ["storage"],
   "browser_action": {
     "default_popup": "popup.html",
@@ -20,5 +20,14 @@
   "background": {
     "scripts": ["background.js"],
     "persistent": false
+  },
+  "commands": {
+    "open_popup": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+S",
+        "mac": "Command+Shift+S"
+      },
+      "description": "Open the extension popup"
+    }
   }
 }

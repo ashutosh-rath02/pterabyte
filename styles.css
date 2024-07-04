@@ -28,11 +28,15 @@ select {
   box-sizing: border-box;
 }
 
+textarea {
+  resize: vertical;
+  max-height: 150px;
+}
+
 button {
   background-color: #3498db;
   color: white;
   border: none;
-  padding: 10px 15px;
   border-radius: 4px;
   cursor: pointer;
   transition: background-color 0.3s;
@@ -40,6 +44,34 @@ button {
 
 button:hover {
   background-color: #2980b9;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+#folderSelect {
+  flex-grow: 1;
+  margin-right: 10px;
+}
+
+button[type="submit"],
+#addNewFolder {
+  flex-shrink: 0;
+  width: 80px;
+  height: 36px;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#addNewFolder {
+  width: 36px;
+  margin-left: 10px;
 }
 
 .folder {
@@ -80,6 +112,7 @@ button:hover {
 .item p {
   margin: 0;
   color: #7f8c8d;
+  word-wrap: break-word;
 }
 
 .item-buttons {
@@ -93,7 +126,7 @@ button:hover {
 }
 
 #newFolderForm {
-  margin-top: 20px;
+  margin-top: 10px;
   display: flex;
 }
 
@@ -102,6 +135,34 @@ button:hover {
   margin-right: 10px;
 }
 
-#addNewFolder {
-  white-space: nowrap;
+.loader {
+  border: 3px solid #f3f3f3;
+  border-top: 3px solid #3498db;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  animation: spin 1s linear infinite;
+  display: inline-block;
+  margin-left: 10px;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.delete-folder,
+.delete {
+  cursor: pointer;
+  color: #e74c3c;
+  margin-left: 10px;
+}
+
+.delete-folder:hover,
+.delete:hover {
+  color: #c0392b;
 }

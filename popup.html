@@ -7,6 +7,10 @@
       href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap"
       rel="stylesheet"
     />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+      rel="stylesheet"
+    />
   </head>
   <body>
     <div class="container">
@@ -18,18 +22,23 @@
           placeholder="Description"
           required
         ></textarea>
-        <select id="folderSelect">
-          <option value="links">Links</option>
-          <option value="articles">Articles</option>
-          <option value="notes">Notes</option>
-        </select>
-        <button type="submit">Save</button>
+        <div class="form-actions">
+          <select id="folderSelect">
+            <option value="Links">Links</option>
+            <option value="Articles">Articles</option>
+            <option value="Notes">Notes</option>
+          </select>
+          <button type="submit">Save</button>
+          <button type="button" id="addNewFolder" title="Add New Folder">
+            <i class="fas fa-plus"></i>
+          </button>
+        </div>
       </form>
-      <div id="folderContainer"></div>
-      <div id="newFolderForm">
+      <div id="newFolderForm" style="display: none">
         <input type="text" id="newFolderName" placeholder="New folder name" />
-        <button id="addNewFolder">Add Folder</button>
+        <button id="confirmNewFolder">Add</button>
       </div>
+      <div id="folderContainer"></div>
     </div>
     <script src="popup.js"></script>
   </body>
