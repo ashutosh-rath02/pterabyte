@@ -1,33 +1,107 @@
 body {
-  width: 300px;
-  padding: 10px;
-  font-family: Arial, sans-serif;
+  width: 350px;
+  font-family: "Roboto", sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f0f4f8;
+}
+
+.container {
+  padding: 20px;
 }
 
 h1 {
-  font-size: 18px;
+  font-size: 24px;
+  color: #2c3e50;
+  margin-bottom: 20px;
+  text-align: center;
 }
 
 input,
-textarea {
+textarea,
+select {
   width: 100%;
+  padding: 10px;
   margin-bottom: 10px;
+  border: 1px solid #bdc3c7;
+  border-radius: 4px;
+  box-sizing: border-box;
 }
 
 button {
+  background-color: #3498db;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 4px;
   cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+button:hover {
+  background-color: #2980b9;
+}
+
+.folder {
+  background-color: white;
+  border-radius: 4px;
+  margin-bottom: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.folder-header {
+  background-color: #ecf0f1;
+  padding: 10px 15px;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.folder-content {
+  padding: 10px 15px;
+  display: none;
 }
 
 .item {
-  border: 1px solid #ccc;
-  padding: 10px;
-  margin-bottom: 10px;
+  border-bottom: 1px solid #ecf0f1;
+  padding: 10px 0;
+}
+
+.item:last-child {
+  border-bottom: none;
 }
 
 .item h3 {
-  margin-top: 0;
+  margin: 0 0 5px 0;
+  color: #2c3e50;
 }
 
-.item button {
+.item p {
+  margin: 0;
+  color: #7f8c8d;
+}
+
+.item-buttons {
+  margin-top: 10px;
+}
+
+.item-buttons button {
   margin-right: 5px;
+  font-size: 12px;
+  padding: 5px 10px;
+}
+
+#newFolderForm {
+  margin-top: 20px;
+  display: flex;
+}
+
+#newFolderName {
+  flex-grow: 1;
+  margin-right: 10px;
+}
+
+#addNewFolder {
+  white-space: nowrap;
 }

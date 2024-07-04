@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
-  "name": "Important Links and Text Storage",
-  "version": "1.0",
+  "name": "Pterabyte",
+  "version": "1.1",
   "description": "Store and manage important links and text",
   "permissions": ["storage"],
   "browser_action": {
